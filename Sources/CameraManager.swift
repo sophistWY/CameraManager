@@ -1494,19 +1494,21 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
                     let previousOrientation = self.deviceOrientation
 
                     // 根据 pitch 和 roll 判断设备方向
-                    if abs(pitch) < .pi / 4 {
-                        if roll >= 0 {
-                            self.deviceOrientation = .landscapeRight
-                        } else {
-                            self.deviceOrientation = .landscapeLeft
-                        }
-                    } else {
-                        if pitch >= 0 {
-                            self.deviceOrientation = .portraitUpsideDown
-                        } else {
-                            self.deviceOrientation = .portrait
-                        }
-                    }
+//                    if abs(pitch) < .pi / 4 {
+//                        if roll >= 0 {
+//                            self.deviceOrientation = .landscapeRight
+//                        } else {
+//                            self.deviceOrientation = .landscapeLeft
+//                        }
+//                    } else {
+//                        if pitch >= 0 {
+//                            self.deviceOrientation = .portraitUpsideDown
+//                        } else {
+//                            self.deviceOrientation = .portrait
+//                        }
+//                    }
+                    
+                    self.deviceOrientation = UIDevice.current.orientation
 
                     // 判断方向变化
                     if previousOrientation != self.deviceOrientation {
