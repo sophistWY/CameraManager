@@ -1486,30 +1486,37 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
             if coreMotionManager.isDeviceMotionAvailable {
                 coreMotionManager.startDeviceMotionUpdates(to: OperationQueue()) { motion, _ in
                     guard let motion = motion else { return }
-                    let x = motion.gravity.x
-                    let y = motion.gravity.y
+
+                    let attitude = motion.attitude
+                    let pitch = attitude.pitch
+                    let roll = attitude.roll
+
                     let previousOrientation = self.deviceOrientation
-                    if fabs(y) >= fabs(x) {
-                        if y >= 0 {
-                            self.deviceOrientation = .portraitUpsideDown
-                        } else {
-                            self.deviceOrientation = .portrait
-                        }
-                    } else {
-                        if x >= 0 {
+
+                    // 根据 pitch 和 roll 判断设备方向
+                    if abs(pitch) < .pi / 4 {
+                        if roll >= 0 {
                             self.deviceOrientation = .landscapeRight
                         } else {
                             self.deviceOrientation = .landscapeLeft
                         }
+                    } else {
+                        if pitch >= 0 {
+                            self.deviceOrientation = .portraitUpsideDown
+                        } else {
+                            self.deviceOrientation = .portrait
+                        }
                     }
+
+                    // 判断方向变化
                     if previousOrientation != self.deviceOrientation {
                         self._orientationChanged()
                     }
+
+                    self.cameraIsObservingDeviceOrientation = true
                 }
-                
-                cameraIsObservingDeviceOrientation = true
             } else {
-                cameraIsObservingDeviceOrientation = false
+                self.cameraIsObservingDeviceOrientation = false
             }
         }
     }
